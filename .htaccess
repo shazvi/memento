@@ -1,0 +1,10 @@
+
+RewriteEngine on
+
+RewriteCond %{HTTP_REFERER}          ^http?://localhost(/|$)
+RewriteCond $1 !^(index\.php|img|css|js|captcha|editable)
+RewriteRule ^(.*)$ /memento/index.php/$1 [L,QSA]
+
+RewriteCond %{HTTP_REFERER}          ^http?://memento\.shazvi\.com(/|$)
+RewriteCond $1 !^(index\.php|img|css|js|captcha|editable)
+RewriteRule ^(.*)$ /index.php/$1 [L,QSA]
