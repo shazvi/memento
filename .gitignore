@@ -3,3 +3,4 @@ Desktop.ini
 .htaccess
 /application/config/database.php
 /application/config/constants.php
+.idea/
