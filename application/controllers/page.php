@@ -28,15 +28,15 @@ class Page extends CI_Controller {
                 if($key["booknum"] == $this->session->userdata("book")) $book=$key;
             }
 
-            $rows = $this->usermodel->get_notes($this->session->userdata("book"));
+            $rows = $this->usermodel->get_notes($this->session->userdata("book"), 0);
 
-            $tags1 = $this->usermodel->get_tags($this->session->userdata("book"));
+            $tags1 = $this->usermodel->get_tags($this->session->userdata("book"), 0);
         }
         elseif ($bookrows["num_rows"] > 0)
         {
             $book = $bookrows["first_row"];
-            $rows = $this->usermodel->get_notes($bookrows["first_row"]->booknum);
-            $tags1 = $this->usermodel->get_tags($bookrows["first_row"]->booknum);
+            $rows = $this->usermodel->get_notes($bookrows["first_row"]->booknum, 0);
+            $tags1 = $this->usermodel->get_tags($bookrows["first_row"]->booknum, 0);
         }
 
         $positions = array();
@@ -94,6 +94,50 @@ class Page extends CI_Controller {
     }
 
 
+    public function recycle_bin( ) {
+
+        $bookrows = $this->usermodel->get_books();
+        $rows = $this->usermodel->get_notes($bookrows["first_row"]->booknum, 1);
+        $tags1 = $this->usermodel->get_tags($bookrows["first_row"]->booknum, 1);
+
+        $positions = array();
+        $tags = "";
+        if ($bookrows["num_rows"] > 0) {
+            foreach ($rows as $row){
+                if ($rows !== false){
+                    $positions[] = array(
+                        "number" => $row["number"],
+                        "note" => str_replace("\n", "<br/>", $row["note"]),
+                        "dateset" => $row["dateset"],
+                        "duedate" => substr($row["duedate"], 0, -3),
+                        "email" => $row["email"],
+                        "priority" => $row["priority"],
+                        "booknum" => $row["booknum"]
+                    );
+                }
+            }
+            //Sort tags
+            function cmp($a, $b){
+                return $b['ordery'] - $a['ordery'];
+            }
+            usort($tags1, "cmp");
+            $tags = array_reverse($tags1);
+        }
+
+        $data = array(
+            "title" => "Reminders",
+            "positions" => $positions,
+            "tags" => $tags,
+            "bookrow" => $bookrows["result"]
+        );
+
+        // render reminder;
+
+        $this->masterpage->addContentPage ( "recycle", 'content', $data );
+        $this->masterpage->show ( );
+    }
+
+
     public function login()
     {
         $this->load->helper('form');
@@ -130,7 +174,7 @@ class Page extends CI_Controller {
 
     public function demo()
     {
-        if (getenv("HTTP_X_FORWARDED_FOR")) {
+        /*if (getenv("HTTP_X_FORWARDED_FOR")) {
             $ip_address = getenv("HTTP_X_FORWARDED_FOR");
         } else {
             $ip_address = getenv("REMOTE_ADDR");
@@ -145,14 +189,14 @@ class Page extends CI_Controller {
                         <p>IP Address: ".$ip_address."</p>
                         <p>User agent: ".$_SERVER['HTTP_USER_AGENT']."</p>
                     </body></html>";
-        $this->usermodel->mailgun("shazvi@outlook.com","Someone logged into John's user!",$htmlnote);
+        $this->usermodel->mailgun("shazvi@outlook.com","Someone logged into John's user!",$htmlnote);*/
 
         $this->session->set_userdata("id", JOHNID);
         redirect("/");
     }
 
 
-    public function create()
+    public function create() // Register
     {
         $this->load->helper('form');
         $this->load->library('form_validation');
@@ -302,6 +346,11 @@ class Page extends CI_Controller {
     {
         $this->masterpage->addContentPage ( 'success', 'content', $data );
         $this->masterpage->show ( );
+    }
+
+    public function a()
+    {
+        phpinfo();
     }
 }
 ?>

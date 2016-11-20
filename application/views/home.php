@@ -14,7 +14,7 @@ http://vitalets.github.io/x-editable/docs.html*/
                     <i class="icon-share"></i> Move to: <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <?php foreach ($bookrows as $key): ?>
+                    <?php foreach ($bookrow as $key): ?>
                         <li><a href="#"><?=$key["bookname"]?></a></li>
                     <? endforeach ?>
                 </ul>
@@ -39,7 +39,7 @@ http://vitalets.github.io/x-editable/docs.html*/
                     <ul class="dropdown-menu">
                         <li><a data-toggle="modal" href="#prompt" onclick="promptvar='new'">New <strong>NoteBook</strong></a></li>
                         <li class="divider"></li>
-                        <?php foreach ($bookrows as $key): ?>
+                        <?php foreach ($bookrow as $key): ?>
                             <li class="dropdown-submenu<?php if($book->booknum==$key["booknum"]) echo" active";?>">
                                 <a tabindex="-1" href="notebook.php?snum=<?= $key["booknum"]?>"><?= $key["bookname"] ?></a>
                                 <ul class="dropdown-menu">
@@ -89,7 +89,7 @@ http://vitalets.github.io/x-editable/docs.html*/
                 <input type="checkbox" class="chkbody" onchange="bluetick(this);">
                 <span class="btn-group buttns">
                     <!-- <a class="btn btn-mini btn-primary" title="Edit" href="/edit.php?link=<?=$row["number"]?>" data-editid="<?=$row["number"]?>"><i class="icon-pencil icon-white"></i></a> -->
-                    <a class="btn btn-mini pdd" title="Click to recycle, SHIFT click to delete" onclick="deletebtn(event,<?=$row["number"]?>,'recycle.php')" onmouseover="delmouseover(event,this)" onmouseout="delmouseout(this)" data-loading-text="Deleting..." data-delid="<?=$row["number"]?>"><i class="icon-trash"></i></a>
+                    <a class="btn btn-mini pdd" title="Click to recycle, SHIFT click to delete" onclick="deletebtn(event,<?=$row["number"]?>,'recycle.php')" data-loading-text="Deleting..." data-delid="<?=$row["number"]?>"><i class="icon-trash"></i></a>
                 </span>
                 
             </td>
@@ -134,7 +134,7 @@ http://vitalets.github.io/x-editable/docs.html*/
                 <a href="#" class="duedateclass" data-type="datetime" data-pk="<?=$row["number"]?>" data-url="<?php echo base_url();?>post/editduedate"><?php if ($row["duedate"] == "0000-00-00 00:00") echo "---"; else echo $row["duedate"];?></a>
             </td>
             <td>
-                <a href="#" class="confclass" data-type="select" data-value="<?php echo $row['email']?>" data-pk="<?=$row["number"]?>" data-url="<?php echo base_url();?>post/editconf"><?php echo $row["email"];?>
+                <a href="#" class="confclass" data-type="select" data-value="<?php echo $row['email']?>" data-pk="<?=$row["number"]?>" data-url="<?php echo base_url();?>post/editconf"><?php echo $row["email"];?></a>
             </td>
         </tr>
 
@@ -166,7 +166,7 @@ http://vitalets.github.io/x-editable/docs.html*/
     </div>
     <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</a>
-        <a id="edial" class="btn btn-primary" onclick="prmptchk()">Create Book</a>
+        <a id="edial" class="btn btn-primary" onclick="prmptchk()">Submit</a>
     </div>
 </div>
 
@@ -413,14 +413,12 @@ function multidelbtn(){
     });
 }
 $('#deletefield').on('hidden', function () {
-    $("#edel").off("click");
-    $('#edel').attr('href','#');
+    $("#edel").off("click").attr('href','#');
 });
 
-var hoverElem = null;
 $(window).keydown(function(evt) {
-    if ((evt.which == 16)&&(hoverElem != null)) {
-        $(hoverElem).addClass('btn-danger');
+    if ((evt.which == 16)) {
+        $(".pdd").addClass('btn-danger');
         $("#table0").css({
             '-moz-user-select':'none',
             '-o-user-select':'none',
@@ -431,21 +429,11 @@ $(window).keydown(function(evt) {
         });
     }
 }).keyup(function(evt) {
-        if ((evt.which == 16)&&(hoverElem != null)) {
-            $(hoverElem).removeClass('btn-danger');
+        if ((evt.which == 16)) {
+            $(".pdd").removeClass('btn-danger');
+            $("#table0").removeAttr("style");
         }
-        $("#table0").removeAttr("style");
 });
-function delmouseover(event,x){
-    hoverElem = x;
-    if (event.shiftKey==1) {
-        $(x).addClass('btn-danger');
-    }
-}
-function delmouseout(x){
-    hoverElem = null;
-    $(x).removeClass('btn-danger');
-}
 
 
 //Check empty date column and email

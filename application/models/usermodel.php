@@ -33,23 +33,37 @@ class Usermodel extends CI_Model {
 		);
 	}
 
-	public function get_notes($booknum)
+	public function get_notes($booknum, $recycled)
 	{
-		$query = $this->db->get_where("reminder", array(
-			"id" => $this->session->userdata("id"),
-			"booknum" => $booknum,
-			"recycled" => 0
-		));
+        if($recycled == 1) {
+            $query = $this->db->get_where("reminder", array(
+                "id" => $this->session->userdata("id"),
+                "recycled" => $recycled
+            ));
+        } else {
+            $query = $this->db->get_where("reminder", array(
+                "id" => $this->session->userdata("id"),
+                "booknum" => $booknum,
+                "recycled" => $recycled
+            ));
+        }
 		return $query->result_array();
 	}
 
-	public function get_tags($booknum)
+	public function get_tags($booknum, $recycled)
 	{
-		$query = $this->db->get_where("tags", array(
-			"id" => $this->session->userdata("id"),
-			"booknum" => $booknum,
-			"recycled" => 0
-		));
+        if ($recycled == 1) {
+            $query = $this->db->get_where("tags", array(
+                "id" => $this->session->userdata("id"),
+                "recycled" => $recycled
+            ));
+        } else {
+            $query = $this->db->get_where("tags", array(
+                "id" => $this->session->userdata("id"),
+                "booknum" => $booknum,
+                "recycled" => $recycled
+            ));
+        }
 		return $query->result_array();
 	}
 
@@ -120,7 +134,7 @@ class Usermodel extends CI_Model {
 
 	public function url_contains($value)
 	{
-		return strpos($_SERVER["PHP_SELF"], $value) !== false;
+		return strpos($_SERVER["REQUEST_URI"], $value) !== false;
 	}
 
 	public function set_pass($email, $pass)

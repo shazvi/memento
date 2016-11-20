@@ -69,7 +69,7 @@
                     </script>
                 <?php else: ?>
                     <a class="topp"><img alt="Memento" src="<?php echo base_url();?>img/logo.png"/></a><br>
-                    <img class="topp" alt="A simple reminder app" src="<?php echo base_url();?>img/banner.png"/>
+                    <!-- <img class="topp" alt="A simple reminder app" src="<?php echo base_url();?>img/banner.png"/> -->
                 <?php endif ?>
             </div>
             <div id="middle">
